@@ -4,7 +4,9 @@ region = "eu-central-1"
 }
 
 variable "domain_name" {
-  name = "yournamehere.io"
+  default = "yournamehere.io"
+  type = string
+  description = "replace domain name here"
 }
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -100,13 +102,13 @@ lifecycle {
 }
 
 resource "aws_route53_zone" "adv_primary" {
-name = vars.domain_name.name
+name = var.domain_name
 delegation_set_id = aws_route53_delegation_set.adventure_dns.id
 }
 
 resource "aws_route53_record" "adv_dns_record" {
 zone_id = aws_route53_zone.adv_primary.zone_id
-name = vars.domain_name.name
+name = var.domain_name
 type = "A"
 ttl = "300"
 records = [aws_instance.adventure.public_ip]
@@ -114,7 +116,7 @@ records = [aws_instance.adventure.public_ip]
 
 resource "aws_route53_record" "adv_api_dns_record" {
 zone_id = aws_route53_zone.adv_primary.zone_id
-name = vars.domain_name.name
+name = var.domain_name
 type = "A"
 ttl = "300"
 records = [aws_instance.adventure.public_ip]
